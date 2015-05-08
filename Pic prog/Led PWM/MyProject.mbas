@@ -92,32 +92,16 @@ const i_max as byte = 7
 
   Sub Procedure Proc_Setpoint_modificatie_1
     if Display_mode = 0 then
-      if Setpoint[0] > 5  then  Setpoint[0]   =   Setpoint[0] - 1  end if
-      if Setpoint[1] > 5  then  Setpoint[1]   =   Setpoint[1] - 1  end if
-      if Setpoint[2] > 5  then  Setpoint[2]   =   Setpoint[2] - 1  end if
-      if Setpoint[3] > 5  then  Setpoint[3]   =   Setpoint[3] - 1  end if
-      if Setpoint[4] > 5  then  Setpoint[4]   =   Setpoint[4] - 1  end if
-      if Setpoint[5] > 5  then  Setpoint[5]   =   Setpoint[5] - 1  end if
-      if Setpoint[6] > 5  then  Setpoint[6]   =   Setpoint[6] - 1  end if
-      if Setpoint[7] > 5  then  Setpoint[7]   =   Setpoint[7] - 1  end if
-      if Setpoint[8] > 5  then  Setpoint[8]   =   Setpoint[8] - 1  end if
-      if Setpoint[9] > 5  then  Setpoint[9]   =   Setpoint[9] - 1  end if
-      if Setpoint[10] > 5 then  Setpoint[10]  =   Setpoint[10] - 1 end if
+      for i = 0 to 10
+        if Setpoint[i] > 5  then  Setpoint[i] = Setpoint[i] - 1  end if
+       next i
       if Setpoint[10] = 5 then  Display_mode = 1 end if
     end if
   
     if Display_mode = 1 then
-      if Setpoint[0] < 255  then  Setpoint[0]   =   Setpoint[0] + 1 end if
-      if Setpoint[1] < 255  then  Setpoint[1]   =   Setpoint[1] + 1 end if
-      if Setpoint[2] < 255  then  Setpoint[2]   =   Setpoint[2] + 1 end if
-      if Setpoint[3] < 255  then  Setpoint[3]   =   Setpoint[3] + 1 end if
-      if Setpoint[4] < 255  then  Setpoint[4]   =   Setpoint[4] + 1 end if
-      if Setpoint[5] < 255  then  Setpoint[5]   =   Setpoint[5] + 1 end if
-      if Setpoint[6] < 255  then  Setpoint[6]   =   Setpoint[6] + 1 end if
-      if Setpoint[7] < 255  then  Setpoint[7]   =   Setpoint[7] + 1 end if
-      if Setpoint[8] < 255  then  Setpoint[8]   =   Setpoint[8] + 1 end if
-      if Setpoint[9] < 255  then  Setpoint[9]   =   Setpoint[9] + 1 end if
-      if Setpoint[10] < 255 then Setpoint[10] =   Setpoint[10]+ 1   end if
+      for i = 0 to 10
+        if Setpoint[i] < 255  then  Setpoint[i] = Setpoint[i] + 1 end if
+      next i
       if Setpoint[10] = 255 then  Display_mode = 0 end if
     end if
   end sub
