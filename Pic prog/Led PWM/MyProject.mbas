@@ -199,30 +199,27 @@ const i_max as byte = 7
     ' voor Timer1
     'if PIR1.TMR1IF = 1 then
     if TMR1IF_bit = 1 then
-      #define       _________ Begin werk programma _________________________
-      #define       ========================================================
-        INC (Timer1_counter0)
-        If Timer1_counter0  = 255 then Timer1_counter0  = 0 end if
-        Proc_Test_display_A5
-        Proc_Init_Timer1_16F877a_module                 ' timer1 variabelen instellen
-      #define       _________ Einde werk programma _________________________
-      #define       ========================================================
+      'begin werkprogramma
+      INC (Timer1_counter0)
+      If Timer1_counter0  = 255 then Timer1_counter0  = 0 end if
+      Proc_Test_display_A5
+      Proc_Init_Timer1_16F877a_module                 ' timer1 variabelen instellen
+      'eind werkprogramma
       TMR1IF_bit = 0    'PIR1.TMR1IF = 0    'clear Interrupt fLAG BIT
     end if
-
-    #define       _________ Begin werk programma _________________________
-    #define       ========================================================
-      if  TMR2IF_bit = 1 then
-        INC(Timer2_Fade_counter)
-        If Timer2_Fade_counter > 30  then           ' Fade_value_1
-          Timer2_Fade_counter = 0
-
-          Proc_Setpoint_modificatie_3
-        end if
-        Proc_Init_Timer2_16F877a_module               ' timer2 variabelen instellen
-        #define       _________ Einde werk programma _________________________
-        #define       ========================================================
-        TMR2IF_bit = 0   'PIR1.TMR2IF = 0    'clear Interrupt fLAG BIT
+    '---------------------------------------------------------------------------
+    
+    
+    if  TMR2IF_bit = 1 then
+      'begin werkprogramma
+      INC(Timer2_Fade_counter)
+      If Timer2_Fade_counter > 30  then           ' Fade_value_1
+        Timer2_Fade_counter = 0
+        Proc_Setpoint_modificatie_3
+      end if
+      Proc_Init_Timer2_16F877a_module               ' timer2 variabelen instellen
+      ' Einde werk programma
+      TMR2IF_bit = 0   'PIR1.TMR2IF = 0    'clear Interrupt fLAG BIT
       end if
   End sub
   '=============================================================================

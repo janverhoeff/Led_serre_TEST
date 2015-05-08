@@ -37,16 +37,17 @@ Count=0
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
-Count=9
+Count=10
 Path0=C:\Users\Public\Documents\Mikroelektronika\mikroBasic PRO for PIC\defs\
 Path1=C:\Users\Public\Documents\Mikroelektronika\mikroBasic PRO for PIC\Uses\P16\
-Path2=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - T\
-Path3=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - Timer 1 en 2\
-Path4=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - Timer 1 en 2 - kopie (3)\
-Path5=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - alleen Timer2\
-Path6=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM\
-Path7=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\PWM Led serre\Led PWM\
-Path8=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\PWM Led serre\
+Path2=D:\AAA belangrijk 1\A Elec Projecten\Led_serre_TEST\Pic prog\Led PWM\
+Path3=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - T\
+Path4=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - Timer 1 en 2\
+Path5=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - Timer 1 en 2 - kopie (3)\
+Path6=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - alleen Timer2\
+Path7=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM\
+Path8=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\PWM Led serre\Led PWM\
+Path9=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\PWM Led serre\
 [HEADER_PATH]
 Count=0
 [HEADERS]
