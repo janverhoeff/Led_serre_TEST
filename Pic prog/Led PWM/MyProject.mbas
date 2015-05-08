@@ -11,11 +11,6 @@ include LCD_Vier_module
 '****************************************************************
 '*  Name    : Zender                                            *
 '*  Author  : Jan B. Verhoeff                                   *
-'*  Notice  :                                                   *
-'*          :                                                   *
-'*  Date    :                                                   *
-'*  Notes   :                                                   *
-'*          :                                                   *
 '****************************************************************
 
 '  Test configuration:
