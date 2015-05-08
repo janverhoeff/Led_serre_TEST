@@ -1,0 +1,80 @@
+module PWM_1_2_module
+
+
+
+  '-------------------------------------------------------------------------------
+
+  'procedures en functies  prototype declareren
+  ' voor PWM1
+  Sub Procedure Proc_Init_PWM1
+  Sub Procedure Proc_PWM1_set_ratio (dim PWM1_duty_ratio as byte)
+  Sub Procedure Proc_PWM1_start
+  Sub Procedure Proc_PWM1_stop
+  ' voor PWM2
+  Sub Procedure Proc_Init_PWM2
+  Sub Procedure Proc_PWM2_set_ratio (dim PWM1_duty_ratio as byte)
+  Sub Procedure Proc_PWM2_start
+  Sub Procedure Proc_PWM2_stop
+  '-------------------------------------------------------------------------------
+
+  implements
+
+  'Const
+
+  'Dim
+
+  '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+  Sub Procedure Proc_Init_PWM1
+    'Initialize PWM module at xx KHz:
+    PWM1_Init(5000)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_PWM1_set_ratio (dim PWM1_duty_ratio as byte)
+    'Set duty ratio
+     PWM1_Set_Duty(PWM1_duty_ratio)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_PWM1_start
+    PWM1_Start()
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_PWM1_stop
+    PWM1_Stop()
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_Init_PWM2
+    'Initialize PWM module at xx KHz:
+    PWM2_Init(5000)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_PWM2_set_ratio (dim PWM2_duty_ratio as byte)
+    'Set duty ratio
+     PWM2_Set_Duty(PWM2_duty_ratio)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_PWM2_start
+    PWM2_Start()
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_PWM2_stop
+    PWM2_Stop()
+  end sub
+  '=============================================================================
+
+end.

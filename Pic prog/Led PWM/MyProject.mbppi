@@ -1,0 +1,104 @@
+[DEVICE]
+Name=P16F877A
+Clock=20000000
+[MEMORY_MODEL]
+Value=0
+[BUILD_TYPE]
+Value=0
+[ACTIVE_TAB]
+Value=MyProject.mbas
+[USE_EEPROM]
+Value=0
+[USE_HEAP]
+Value=0
+[HEAP_SIZE]
+Value=2000
+[EEPROM_DEFINITION]
+Value=
+[FILES]
+Count=1
+File0=MyProject.mbas
+[BINARIES]
+Count=0
+[IMAGES]
+Count=0
+ActiveImageIndex=-1
+[OPENED_FILES]
+Count=5
+File0=MyProject.mbas
+File1=LED_serre_I_O_Poorten_16F877a_module.mbas
+File2=LCD_Vier_module.mbas
+File3=Concept_Register_PIC_16F877a_module.mbas
+File4=Timer1_16F877a_LED_module.mbas
+[EEPROM]
+Count=0
+[ACTIVE_COMMENTS_FILES]
+Count=0
+[OTHER_FILES]
+Count=0
+[SEARCH_PATH]
+Count=9
+Path0=C:\Users\Public\Documents\Mikroelektronika\mikroBasic PRO for PIC\defs\
+Path1=C:\Users\Public\Documents\Mikroelektronika\mikroBasic PRO for PIC\Uses\P16\
+Path2=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - T\
+Path3=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - Timer 1 en 2\
+Path4=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - Timer 1 en 2 - kopie (3)\
+Path5=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM - alleen Timer2\
+Path6=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\Led PWM\
+Path7=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\PWM Led serre\Led PWM\
+Path8=D:\AAA belangrijk 1\A Elec Projecten\Led serre\Pic prog\PWM Led serre\
+[HEADER_PATH]
+Count=0
+[HEADERS]
+Count=0
+[PLDS]
+Count=0
+[Useses]
+Count=43
+File0=Button
+File1=Compact_Flash
+File2=Conversions
+File3=C_Stdlib
+File4=C_Type
+File5=EEPROM
+File6=EPSON_S1D13700
+File7=Glcd
+File8=Glcd_Fonts
+File9=Keypad4x4
+File10=Lcd
+File11=Lcd_Constants
+File12=Manchester
+File13=MemManager
+File14=One_Wire
+File15=PS2
+File16=PWM
+File17=RS485
+File18=Software_I2C
+File19=Software_SPI
+File20=Software_UART
+File21=Sound
+File22=String
+File23=T6963C
+File24=T6963C_Consts
+File25=Time
+File26=Trigon
+File27=Trigonometry
+File28=UART
+File29=ADC
+File30=CAN_SPI
+File31=FLASH
+File32=I2C
+File33=Port_Expander
+File34=SPI
+File35=SPI_Ethernet
+File36=SPI_Ethernet_24j600
+File37=SPI_Glcd
+File38=SPI_Lcd
+File39=SPI_Lcd8
+File40=SPI_T6963C
+File41=SPI_T6963C_Consts
+File42=TouchPanel
+[EXPANDED NODES]
+Node1=Sources
+Node2=Output Files
+Count=2

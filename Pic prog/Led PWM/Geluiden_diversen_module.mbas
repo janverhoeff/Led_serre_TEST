@@ -1,0 +1,146 @@
+module Geluiden_diversen_module
+
+
+  '-------------------------------------------------------------------------------
+
+  'procedures en functies  prototype declareren
+  Sub Procedure Proc_Init_Sound
+  Sub Procedure Proc_Piep_Knop
+  Sub Procedure Proc_Piep_Up
+  Sub Procedure Proc_Piep_Down
+  Sub Procedure Proc_Piep_Aantal_pieps_keer (dim Aantal_pieps as integer)
+  Sub Procedure Proc_Piep_treurig
+  Sub Procedure Proc_Piep_Up_Snel
+  Sub Procedure Proc_Melody()
+  Sub Procedure Proc_Melody2()
+  '-------------------------------------------------------------------------------
+
+  implements
+
+  'Const
+
+  'Dim
+
+  '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+  Sub Procedure Proc_Init_Sound
+      Sound_Init (PortA,0)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_Piep_Up_Snel
+     Sound_Play (1000,50)
+     CLRWDT
+     Sound_Play (1100,50)
+     CLRWDT
+     Sound_Play (1200,50)
+     CLRWDT
+     Sound_Play (1300,50)
+     CLRWDT
+     Sound_Play (1400,50)
+     CLRWDT
+     Sound_Play (1500,50)
+     CLRWDT
+  End sub
+'===============================================================================
+
+
+  Sub Procedure Proc_Piep_treurig
+    Sound_Play(1500,300)
+    Delay_ms(100)
+    CLRWDT
+    Sound_Play(900,300)
+    Delay_ms(100)
+    CLRWDT
+    Sound_Play(500,800)
+    CLRWDT
+  End sub
+'===============================================================================
+
+
+  Sub Procedure Proc_Piep_Aantal_pieps_keer (dim Aantal_pieps as integer)
+    dim I as integer
+    For I = 1 to Aantal_pieps
+      Sound_Play(3000,100)
+      Delay_ms(200)
+     CLRWDT
+    next I
+  End sub
+'===============================================================================
+
+
+  Sub Procedure Proc_Piep_Knop
+      Sound_Play(3000,10)
+      Delay_ms(10)
+      Sound_Play(3300,10)
+     CLRWDT
+  End sub
+'===============================================================================
+
+
+  Sub Procedure Proc_Piep_Up
+     Sound_Play (1000,100)
+     CLRWDT
+     Sound_Play (1100,100)
+     CLRWDT
+     Sound_Play (1200,100)
+     CLRWDT
+     Sound_Play (1300,100)
+     CLRWDT
+     Sound_Play (1400,100)
+     CLRWDT
+     Sound_Play (1500,100)
+     CLRWDT
+  End sub
+'===============================================================================
+
+
+  Sub Procedure Proc_Piep_Down
+     Sound_Play (1500,100)
+     CLRWDT
+     Sound_Play (1400,100)
+     CLRWDT
+     Sound_Play (1300,100)
+     CLRWDT
+     Sound_Play (1200,100)
+     CLRWDT
+     Sound_Play (1100,100)
+     CLRWDT
+     Sound_Play (1000,100)
+     CLRWDT
+  End sub
+'===============================================================================
+
+
+  Sub Procedure Proc_Melody()                  ' Plays the melody "Yellow house"
+    Sound_Play(659, 250) Sound_Play(698, 250) Sound_Play(784, 250) Sound_Play(784, 250)
+    Sound_Play(659, 250) Sound_Play(698, 250) Sound_Play(784, 250) Sound_Play(784, 250)
+    Sound_Play(659, 250) Sound_Play(698, 250) Sound_Play(784, 250)
+    Sound_Play(659, 250) Sound_Play(698, 250) Sound_Play(784, 250) Sound_Play(784, 250)
+    Sound_Play(659, 250) Sound_Play(698, 250) Sound_Play(784, 250)
+    Sound_Play(784, 250) Sound_Play(784, 250) Sound_Play(698, 250) Sound_Play(698, 250) Sound_Play(659, 250)
+  end sub
+
+'sub procedure Melody()                  ' Plays the melody "Yellow house"
+'    Tone1() Tone2() Tone3() Tone3()
+'    Tone1() Tone2() Tone3() Tone3()
+'    Tone1() Tone2() Tone3()
+'    Tone1() Tone2() Tone3() Tone3()
+'    Tone1() Tone2() Tone3()
+'    Tone3() Tone3() Tone2() Tone2() Tone1()
+'end sub
+'===============================================================================
+
+
+  Sub Procedure Proc_Melody2()                 ' Plays Melody2
+    dim counter as byte
+    for counter = 9 to 1 step -1
+      Sound_Play(880, 50)
+      Sound_Play(1046, 50)
+      Sound_Play(1318, 50)
+    next counter
+  end sub
+
+end.

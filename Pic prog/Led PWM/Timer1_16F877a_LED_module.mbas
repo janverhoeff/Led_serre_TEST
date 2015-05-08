@@ -1,0 +1,50 @@
+module Timer1_16F877a_LED_module
+
+  ' instelling voor 10 uS
+  '-------------------------------------------------------------------------------
+
+  'procedures en functies  prototype declareren
+  sub procedure Proc_Init_Timer1_16F877a_module
+  sub procedure Proc_Init_Timer2_16F877a_module
+  
+  
+  implements
+  '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+  sub procedure Proc_Init_Timer1_16F877a_module
+    'volgens Time Calculator
+'    T1CON         = 0x01
+'    TMR1IF_bit         = 0
+'    TMR1H         = 0xFF
+'    TMR1L         = 0xCB
+'    TMR1IE_bit         = 1
+'    INTCON         = 0xC0
+
+                                     ' bij reg T1CON         = 0x01
+                                     ' bij reg TMR1IF_bit    = 0
+    TMR1H         = 0xFF
+    TMR1L         = 0xCB
+                                     ' bij reg TMR1IE_bit     = 1
+                                     ' bij reg INTCON         = 0xC0
+  end sub
+  '===============================================================================
+
+  'Time : 5  ms
+
+  sub procedure Proc_Init_Timer2_16F877a_module
+    'volgens Time Calculator
+'  T2CON	 = 0x7E
+'  PR2		 = 254
+'  TMR2IE_bit	 = 1
+'  INTCON	 = 0xC0
+
+
+    'T2CON         = 0x7E
+    PR2                 = 254
+    TMR2IE_bit         = 1
+    'INTCON         = 0xC0
+  end sub
+
+
+end.

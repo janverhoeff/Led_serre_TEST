@@ -1,0 +1,136 @@
+module LED_serre_I_O_Poorten_16F877a_module
+
+'dim Serre_Balk as sbit [8]
+' Symbolen voor Ingangen en Uitgangen per PORT
+'...............................................................................
+
+'PortA
+dim Piezo_piep     as sbit at PortA.0      ' Input Output
+dim Naam_PortA_0   as sbit at PortA.0      ' Input Output
+dim Naam_PortA_1 as sbit at PortA.1      ' Input Output
+dim Naam_PortA_2 as sbit at PortA.2      ' Input Output
+dim Naam_PortA_3 as sbit at PortA.3      ' Input Output
+dim Naam_PortA_4 as sbit at PortA.4      ' Input Output
+dim Naam_PortA_5 as sbit at PortA.5      ' Input Output
+
+' Gereserveerd voor cristal PortA.6      cristal in/uitgang
+' Gereserveerd voor cristal PortA.7      cristal in/uitgang
+'                               76543210
+const TrisA_register as byte = %11000000
+'...............................................................................
+
+'PortB
+' LCD                                    PortB.0    LCD
+' LCD                                    PortB.1    LCD
+' LCD                                    PortB.2    LCD
+' LCD                                    PortB.3    LCD
+' LCD                                    PortB.4    LCD
+' LCD                                    PortB.5    LCD
+dim Naam_PortB_6 as sbit at PortB.6      '  Output
+dim Naam_PortB_7 as sbit at PortB.7      '  Output
+'                               76543210
+const TrisB_register as byte = %00000000
+'...............................................................................
+
+'PortC
+dim Naam_PortC_0                    as sbit at PortC.0    ' Input Output
+dim Naam_PortC_1                    as sbit at PortC.1    ' Input Output
+dim Naam_PortC_2                    as sbit at PortC.2    ' Input Output
+dim Naam_PortC_3                    as sbit at PortC.3    ' Input Output
+dim Naam_PortC_4                    as sbit at PortC.4    ' Input Output
+dim Naam_PortC_5                    as sbit at PortC.5    ' Input Output
+dim Naam_PortC_6                    as sbit at PortC.6
+dim Naam_PortC_7                    as sbit at PortC.7
+
+'dim Naam_PortC_0                    as sbit at PortC.0    ' Input Output
+'dim Naam_PortC_1                    as sbit at PortC.1    ' Input Output
+'dim Naam_PortC_2                    as sbit at PortC.2    ' Input Output
+'dim Naam_PortC_3                    as sbit at PortC.3    ' Input Output
+'dim Naam_PortC_4                    as sbit at PortC.4    ' Input Output
+'dim Naam_PortC_5                    as sbit at PortC.5    ' Input Output
+'dim Naam_PortC_6                    as sbit at PortC.6
+'dim Naam_PortC_7                    as sbit at PortC.7
+
+''gereseveerd voor SPI  WAARSCHIJNLIJK initialiseerd deze hem  = PortC.0
+''de volgende zijn gereserveerd voor de SPI
+''deze zijn hier benoemd voor test doel einden
+'dim Chip_Select_Port_Expander       as sbit at PortC.1    ' Uitgang SPI
+'
+''de volgende zijn gereserveerd voor de SPI
+''deze zijn hier benoemd voot test doel einden
+'dim SPI_Klok_Test_Port_Exp          as sbit at PortC.3    ' Uitgang SPI Clock
+'dim SPI_data_IN_Test_Port_Exp       as sbit at PortC.4    '  Ingang SPI data in
+'dim SPI_data_OUT_Test_Port_Exp      as sbit at PortC.5    ' Uitgang SPI data OUT
+'                               76543210
+const TrisC_register as byte = %00000000
+'...............................................................................
+
+'PortD
+'de volgenden porten zijn evt. gereserveerd voor SPI om de twee DAC's aan te sturen
+'de onderstaande namen worden in de test programmas gebruikt
+dim CS_not_voor_DAC0                as sbit at PortD.0    'Uitgang
+dim CS_not_voor_DAC1                as sbit at PortD.1    'Uitgang
+
+dim Naam_PortD_0                    as sbit at PortD.0    ' Input Output
+dim Naam_PortD_1                    as sbit at PortD.1    ' Input Output
+dim Naam_PortD_2                    as sbit at PortD.2    ' Input Output
+'
+'de volgenden porten zijn gereserveerd voor SPI om de twee DAC's aan te sturen
+'de onderstaande namen worden in de test programmas gebruikt
+dim SPI_Klok_Test_DAC               as sbit at PortD.3    'Uitgang  ' Serial clock out
+dim SPI_data_IN_Test_DAC            as sbit at portD.4    ' Ingang  ' SPI data in
+dim SPI_data_OUT_Test_DAC           as sbit at portD.5    'Uitgang  ' SPI data uit
+
+dim Naam_PortD_3                    as sbit at PortD.3    ' Input Output
+dim Naam_PortD_4                    as sbit at PortD.4    ' Input Output
+dim Naam_PortD_5                    as sbit at PortD.5    ' Input Output
+
+dim Naam_PortD_6                    as sbit at PortD.6    ' Input Output
+dim Naam_PortD_7                    as sbit at PortD.7    ' Input Output
+'                               76543210
+const TrisD_register as byte = %00000000
+'...............................................................................
+
+'PortE
+dim Naam_PortE_0                    as sbit at PortE.0    ' Input Output
+dim Naam_PortE_1                    as sbit at PortE.1    ' Input Output
+dim Naam_PortE_2                    as sbit at PortE.2    ' Input Output
+'                               76543210
+const TrisE_register as byte = %00001000
+'...............................................................................
+
+
+  Sub Procedure Proc_Tris_init_16F877a
+
+  implements
+
+  ' constants declarations
+  'const
+
+  ' variables declarations
+  'dim
+
+  '/////////////////////////////////////////////////////////////////////////////
+
+
+  Sub Procedure Proc_Tris_init_16F877a
+
+Tris_Bepalen:
+    TrisA = TrisA_register
+    TrisB = TrisB_register
+    TrisC = TrisC_register
+    TrisD = TrisD_register
+    TrisE = TrisE_register
+    '-----------------------------------------------------------------------------
+
+Port_zetten:
+    'Niet aan het toeval overlaten wat nog in het register stond maar Poorten uit zetten
+    PortA = %00000000
+    PortB = %00000000
+    PortC = %00000000
+    PortD = %00000000
+    PortE = 0
+  end sub
+  '=============================================================================
+
+end.

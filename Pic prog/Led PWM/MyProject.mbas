@@ -1,0 +1,347 @@
+program MyProject
+
+include PWM_1_2_module
+include Geluiden_diversen_module
+include LED_serre_I_O_Poorten_16F877a_module
+include Timer1_16F877a_LED_module
+include Concept_Register_PIC_16F877a_module
+include LCD_Vier_module
+
+
+'****************************************************************
+'*  Name    : Zender                                            *
+'*  Author  : Jan B. Verhoeff                                   *
+'*  Notice  :                                                   *
+'*          :                                                   *
+'*  Date    :                                                   *
+'*  Notes   :                                                   *
+'*          :                                                   *
+'****************************************************************
+
+'  Test configuration:
+'     MCU:             PIC16F648A
+'     Dev.Board:       EasyPIC7
+'     Oscillator:      HS, 20 MHz
+'     Ext. Modules:    None
+'     SW:              mikroBasic PRO 6.01  or  higher
+'  NOTES:              None
+'
+
+'Bij poorten die als uitgangen gedefinieerd zijn
+'Bij een logische 0 gaat de LED NIET aan
+'Bij een logische 1 gaat de LED WEL  aan
+
+'Bij poorten die als ingangen gedefinieerd zijn
+'Op print van MicroElektronika is een NIET-ingedrukte schakelaar een logische 0
+'Op print van MicroElektronika is een WEL -ingedrukte schakelaar een logische 1
+
+
+'*******************************************************************************
+'  Declarations (globals)
+'*******************************************************************************
+
+dim Test_programma as byte
+
+'------------------ Variables declarations -------------------------------------
+'-------- Variabelen specifiek voor dit programma ------------------------------
+
+dim Piep_flag_begin    as byte    'wordt 1 als de piep al geweest
+    Piep_flag_einde    as byte    'wordt 1 als er een piep geweest is
+    Knop_Piep_Aan_uit  as byte    'wordt 1 als er een knop ingedrukt is
+    Vlag_interrupt_geweest as byte
+
+dim Interrupt1_counter0 as word
+    Interrupt1_counter1 as word
+    Timer2_Fade_counter as word
+    Interrupt2_counter1 as word
+
+dim Timer1_Led_counter as word
+
+dim Timer1_counter0 as word
+    Timer1_counter1 as byte
+    Timer2_counter0 as byte
+    Timer2_counter1 as byte
+    
+dim Setpoint   as byte [11]        ' dus Setpoint 0 t/m 10 = 11
+    Display_mode     as bit
+    Fade_value_1 as word
+    
+'Hulp variabelen voor locaal gebruik die meerdere keren gebruikt kunnen worden
+' en dan steeds een andere betekenis hebben
+Dim i,y                as byte
+    BB1, BB2           as byte
+    
+'constanten
+'----------
+dim Max_Interrupt1_counter1 as word
+
+const i_max as byte = 7
+      y_max as byte = 2
+    
+'===============================================================================
+'--------  Procedures ---  Functions ------
+'===============================================================================
+
+
+  Sub Procedure Proc_Piep
+    dim i as integer
+    for i = 1 to 20
+      Piezo_piep = 1
+      Delay_us(500)
+      Piezo_piep = 0
+      Delay_us(500)
+    next i
+  end sub
+'===============================================================================
+
+
+  Sub Procedure Proc_Setpoint_modificatie_1
+    if Display_mode = 0 then
+      if Setpoint[0] > 5  then  Setpoint[0]   =   Setpoint[0] - 1  end if
+      if Setpoint[1] > 5  then  Setpoint[1]   =   Setpoint[1] - 1  end if
+      if Setpoint[2] > 5  then  Setpoint[2]   =   Setpoint[2] - 1  end if
+      if Setpoint[3] > 5  then  Setpoint[3]   =   Setpoint[3] - 1  end if
+      if Setpoint[4] > 5  then  Setpoint[4]   =   Setpoint[4] - 1  end if
+      if Setpoint[5] > 5  then  Setpoint[5]   =   Setpoint[5] - 1  end if
+      if Setpoint[6] > 5  then  Setpoint[6]   =   Setpoint[6] - 1  end if
+      if Setpoint[7] > 5  then  Setpoint[7]   =   Setpoint[7] - 1  end if
+      if Setpoint[8] > 5  then  Setpoint[8]   =   Setpoint[8] - 1  end if
+      if Setpoint[9] > 5  then  Setpoint[9]   =   Setpoint[9] - 1  end if
+      if Setpoint[10] > 5 then  Setpoint[10]  =   Setpoint[10] - 1 end if
+      if Setpoint[10] = 5 then  Display_mode = 1 end if
+    end if
+  
+    if Display_mode = 1 then
+      if Setpoint[0] < 255  then  Setpoint[0]   =   Setpoint[0] + 1 end if
+      if Setpoint[1] < 255  then  Setpoint[1]   =   Setpoint[1] + 1 end if
+      if Setpoint[2] < 255  then  Setpoint[2]   =   Setpoint[2] + 1 end if
+      if Setpoint[3] < 255  then  Setpoint[3]   =   Setpoint[3] + 1 end if
+      if Setpoint[4] < 255  then  Setpoint[4]   =   Setpoint[4] + 1 end if
+      if Setpoint[5] < 255  then  Setpoint[5]   =   Setpoint[5] + 1 end if
+      if Setpoint[6] < 255  then  Setpoint[6]   =   Setpoint[6] + 1 end if
+      if Setpoint[7] < 255  then  Setpoint[7]   =   Setpoint[7] + 1 end if
+      if Setpoint[8] < 255  then  Setpoint[8]   =   Setpoint[8] + 1 end if
+      if Setpoint[9] < 255  then  Setpoint[9]   =   Setpoint[9] + 1 end if
+      if Setpoint[10] < 255 then Setpoint[10] =   Setpoint[10]+ 1   end if
+      if Setpoint[10] = 255 then  Display_mode = 0 end if
+    end if
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_Setpoint_modificatie_3
+    dim BB1 as byte
+
+'      Setpoint[0]   = 255
+'      Setpoint[1]   = 255
+'      Setpoint[2]   = 255
+'      Setpoint[3]   = 255
+'      Setpoint[4]   = 255
+'      Setpoint[5]   = 255
+'      Setpoint[6]   = 255
+'      Setpoint[7]   = 255
+
+'      Setpoint[0]   = 0
+'      Setpoint[1]   = 0
+'      Setpoint[2]   = 0
+'      Setpoint[3]   = 0
+'      Setpoint[4]   = 0
+'      Setpoint[5]   = 0
+'      Setpoint[6]   = 0
+'      Setpoint[7]   = 0
+      
+      BB1 = Setpoint[0]
+
+      Naam_PortA_0 = 1
+      Delay_ms(100)
+      Naam_PortA_0 = 0
+      Delay_ms(100)
+      
+            
+      'Setpoint[7] = 0
+      Setpoint[0] = Setpoint[1]
+      Setpoint[1] = Setpoint[2]
+      Setpoint[2] = Setpoint[3]
+      Setpoint[3] = Setpoint[4]
+      Setpoint[4] = Setpoint[5]
+      Setpoint[5] = Setpoint[6]
+      Setpoint[6] = Setpoint[7]
+
+    
+    
+      'Setpoint[5] = 255
+      
+      '
+      'Setpoint[7] = 255
+      If Setpoint[0] = 255 then Setpoint[7] = 0 else Setpoint[7] = 255 end if
+      
+      for i = 0 to i_max
+        if Setpoint[i] = 255 then PortC.i = 1 else PortC.i = 0 end if
+      next i
+      
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_Test_display_A5
+    'alleen om op PortA.5 een indicatie te geven dat de Interrupt werkt
+    'maar de led langzamer laten knipperen anders kan je het niet zien
+    INC (Timer1_Led_counter)
+    If Timer1_Led_counter  > 1500 then              '   1500 x 10 us = 15 mSec
+      Timer1_Led_counter  = 0
+      Naam_PortA_5 = NOT Naam_PortA_5               '   15 mS  aan  15 mS  uit
+    end if
+  end sub
+  '=============================================================================
+  
+  
+  Sub Procedure Interrupt
+    ' voor Timer1
+    'if PIR1.TMR1IF = 1 then
+    if TMR1IF_bit = 1 then
+      #define       _________ Begin werk programma _________________________
+      #define       ========================================================
+        INC (Timer1_counter0)
+        If Timer1_counter0  = 255 then Timer1_counter0  = 0 end if
+        Proc_Test_display_A5
+        Proc_Init_Timer1_16F877a_module                 ' timer1 variabelen instellen
+      #define       _________ Einde werk programma _________________________
+      #define       ========================================================
+      TMR1IF_bit = 0    'PIR1.TMR1IF = 0    'clear Interrupt fLAG BIT
+    end if
+
+    #define       _________ Begin werk programma _________________________
+    #define       ========================================================
+      if  TMR2IF_bit = 1 then
+        INC(Timer2_Fade_counter)
+        If Timer2_Fade_counter > 30  then           ' Fade_value_1
+          Timer2_Fade_counter = 0
+
+          Proc_Setpoint_modificatie_3
+        end if
+        Proc_Init_Timer2_16F877a_module               ' timer2 variabelen instellen
+        #define       _________ Einde werk programma _________________________
+        #define       ========================================================
+        TMR2IF_bit = 0   'PIR1.TMR2IF = 0    'clear Interrupt fLAG BIT
+      end if
+  End sub
+  '=============================================================================
+
+'===============================================================================
+
+
+'*******************************************************************************
+'                   main Program body
+'*******************************************************************************
+
+main:
+  'variabelen een begin waarde geven
+
+  '-----------------------------------------------------------------------------
+
+  'Turn the ANALOG comparitors off. CMCON  = %00000111
+  'CMCON  = %00000111
+  
+  ADCON1 = %00000111
+  
+  '-----------------------------------------------------------------------------
+
+  'NOG EVEN GEEN WDT
+  'OPTION_REG = %10001110       'BIT-0 BIT-1 BIT-2    WDT RATE  111 = FACTOR 128   WDT RATE  110 = FACTOR 64
+                               ' 18msec is de interne RC-oscillator clock cycle
+                               ' bij een prescaler van 128 wordt de totale tijd
+                               ' voordat de WDT een interrupt geeft:
+                               ' 18msec * 128 = 2,3 sec
+                               ' bit-3  =1 Prescaler is assign to the WDT
+  '-----------------------------------------------------------------------------
+
+  'Poort UIT- en of IN-gangen definieren
+  '        76543210
+  Proc_Tris_init_16F877a
+  '-----------------------------------------------------------------------------
+  
+  'LCD 4 x initialiseren
+  'Proc_4_LCD_initialiseren
+  '-----------------------------------------------------------------------------
+  
+  'Initialize USART
+  'Uart1_Init(9600)
+  '-----------------------------------------------------------------------------
+ 
+'  'Initialize PWM 1 en 2
+'  Proc_Init_PWM1
+'  Proc_Init_PWM2
+'  Proc_PWM1_start
+'  Proc_PWM2_start
+  '-----------------------------------------------------------------------------
+  
+
+  Proc_Init_Timer1_16F877a_module
+  Proc_Init_Timer2_16F877a_module
+  '-----------------------------------------------------------------------------
+  BB1 = 0
+
+
+
+      Setpoint[0]   = 255
+      Setpoint[1]   = 255
+      Setpoint[2]   = 255
+      Setpoint[3]   = 255
+      Setpoint[4]   = 255
+      Setpoint[5]   = 255
+      Setpoint[6]   = 255
+      Setpoint[7]   = 255
+      Setpoint[8]   = 255
+      Setpoint[9]   = 255
+      Setpoint[10]  = 255
+
+  Display_mode = 0
+  
+  Timer1_Led_counter = 0
+  
+  Interrupt1_counter0     = 0
+  Interrupt1_counter1     = 0
+  Max_Interrupt1_counter1 = 200
+  Timer2_Fade_counter    = 0
+  Timer2_Fade_counter     = 0
+  '-----------------------------------------------------------------------------
+  
+  
+ 
+  '------------------ Test programmas ------------------------------------------
+ 
+
+    PortA.0 = 1
+    Delay_ms(200)
+    PortA.0 = 0
+    Delay_ms(200)
+    PortA.0 = 1
+    Delay_ms(200)
+    PortA.0 = 0
+    Delay_ms(200)
+    PortA.0 = 1
+    Delay_ms(200)
+    PortA.0 = 0
+    Delay_ms(200)
+    PortA.0 = 1
+    Delay_ms(200)
+    PortA.0 = 0
+    Delay_ms(200)
+
+
+  'Om de interrupts te disabelen   Disable  PEIE INTE RBIE TOIE
+  Proc_Register_settings_PIC_16F877a_module
+  '-----------------------------------------------------------------------------
+  
+         Test_programma = 4
+    'Lcd_Out(1,1,"Testprog = 1 ")
+  '-----------------------------------------------------------------------------
+
+    While Test_programma = 4
+
+'      for i = 0 to i_max
+'        if Setpoint[i] = 255 then PortC.i = 1 else PortC.i = 0 end if
+'      next i
+    wend
+    '---------------------------------------------------------------------------
+end.

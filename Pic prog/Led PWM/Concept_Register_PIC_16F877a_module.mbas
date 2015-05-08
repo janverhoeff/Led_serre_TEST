@@ -1,0 +1,623 @@
+module Concept_Register_PIC_16F877a_module
+
+
+  'procedures en functies  prototype declareren
+  Sub Procedure Proc_Register_settings_PIC_16F877a_module
+
+  implements
+  '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  Sub Procedure Proc_Register_settings_PIC_16F877a_module
+    '
+    '
+    '   ADCON0 REGISTER         Analog Digital converter 0
+    '
+    '                        bit        7      6       5      4       3       2       1       0
+    '                                R/W-0  R/W-0   R/W-0  R/W-0   R/W-0   R/W-0   U-0     R/W-0
+    '                                ADCS1: ADCS0:  CHS2:  CHS1:   CHS0:   GO/DONE ó       ADON:
+    '
+    '                        bit-6   ADCS2:         van ADCON1 register
+    '                        bit-76  ADCS1: ADCS0:  van ADCON0 register
+    '
+    '                                ADCON1  ADCON0 REGISTERS
+    '                                ADCS2:  ADCS1: ADCS0:
+    '                                bit-6   bit-76               Clock Conversion
+    '                                    0       00               FOSC/2
+    '                                    0       01               FOSC/8
+    '                                    0       10               FOSC/32
+    '                                    0       11               FRC (clock derived from the internal A/D RC oscillator)
+    '                                    1       00               FOSC/4
+    '                                    1       01               FOSC/16
+    '                                    1       10               FOSC/64
+    '                                    1       11               FRC (clock derived from the internal A/D RC oscillator)'
+    '
+    '                        bit-543 CHS2: CHS1: CHS0: Analog Channel Select bits
+    '                            000 = Channel 0 (AN0)
+    '                            001 = Channel 1 (AN1)
+    '                            010 = Channel 2 (AN2)
+    '                            011 = Channel 3 (AN3)
+    '                            100 = Channel 4 (AN4)
+    '                            101 = Channel 5 (AN5)
+    '                            110 = Channel 6 (AN6)
+    '                            111 = Channel 7 (AN7)
+    '
+    '                                 Note: The PIC16F873A/876A devices only implement A/D channels 0 through 4; the unimplemented
+    '                                 selections are reserved. Do not select any unimplemented channels with these devices.
+    '
+    '                        bit-2    GO/DONE A/D Conversion Status bit
+    '                                 When ADON = 1:
+    '                                   1 = A/D conversion in progress (setting this bit starts the A/D conversion which is automatically
+    '                                          cleared by hardware when the A/D conversion is complete)
+    '                                   0 = A/D conversion not in progress
+    '
+    '                        bit-1    Unimplemented: Read as í0í
+    '
+    '                        bit 0    ADON: A/D On bit
+    '                                   0 = A/D converter module is shut-off and consumes no operating current
+    '================================================================================
+    '
+    '
+    '  ADCON1 REGISTER          Analog Digital converter 1
+    '
+    '                        bit       7      6       5       4       3       2       1       0
+    '                                R/W-0   R/W-0    U-0     U-0     R/W-0   R/W-0   R/W-0   R/W-0
+    '                                ADFM:   ADCS2:   ó       ó       PCFG3:  PCFG2:  PCFG1:  PCFG0:
+    '
+    '                        bit 7   ADFM:    A/D Result Format Select.bit
+    '                                1 = Right justified. Six (6) Most  Significant bits of ADRESH are read as í0í.
+    '                                0 = Left  justified. Six (6) Least Significant bits of ADRESL are read as í0í.
+    '
+    '                        bit 6   ADCS2:   A/D Conversion Clock Select bit (ADCON1 bits in shaded area and in bold)
+    '
+    '                        bit 5-4 Unimplemented: Read as '0'
+    '
+    '                        bit 3210    ADCON1 REGISTER
+    '                                    AN7         AN6                AN5                AN4                AN3                AN2                AN1                AN0        VREF+        VREF-                C / R
+    '
+    '                            0000    A              A                A                A                A                A                A                A        VDD        VSS                8 / 0
+    '                            0001    A                A                A                A                VREF+                A                A                A              AN3            VSS             7 / 1
+    '                            0010    D                D                 D                A               A               A                A                A              VDD            VSS             5 / 0
+    '                            0011    D                D                 D                A               VREF+           A                A                A              AN3            VSS             4 / 1
+    '                            0100    D                D                 D                D               A               D                A                A              VDD            VSS             3 / 0
+    '                            0101    D                D                 D                D               VREF+           D                A                A              AN3            VSS             2 / 1
+    '                            011x    D                D                 D                D               D               D                D                D              ó              ó               0 / 0
+    '                            1000    A                A                 A                A               VREF+           VREF-            A                A              AN3            AN2             6 / 2
+    '                            1001    D                D                 A                A               A               A                A                A              VDD            VSS             6 / 0
+    '                            1010    D                D                 A                A               VREF+           A                A                A              AN3            VSS             5 / 1
+    '                            1011    D                D                 A                A               VREF+           VREF-            A                A              AN3            AN2             4 / 2
+    '                            1100    D                D                 D                A               VREF+           VREF-            A                A              AN3            AN2             3 / 2
+    '                            1101    D                D                 D                D               VREF+           VREF-            A                A              AN3            AN2             2 / 2
+    '                            1110    D                D                 D                D               D               D                D                A              VDD            VSS             1 / 0
+    '                            1111    D                D                 D                D               VREF+           VREF-            D                A              AN3            AN2             1
+    '
+    '                        Note: On any device RESET, the port pins that are multiplexed with analog functions (ANx)
+    '                        are forced to be an analog input.
+    '================================================================================
+    '
+    '
+    '  STATUS REGISTER
+    '
+    'Note: The C and DC bits operate as a Borrow and Digit Borrow out bit, respectively, in
+    '      subtraction. See the SUBLW and SUBWF instructions for examples.
+    '
+    '      R/W-0    R/W-0    R/W-0    R-1    R-1    R/W-x   R/W-x   R/W-x
+    '     IRP      RP1       RP0      TO    PD     Z        DC      C
+    '
+    '                        bit 7   IRP: Register Bank Select bit (used for indirect addressing)
+    '                            1        = Bank 2, 3 (100h-1FFh)
+    '                            0        = Bank 0, 1 (00h-FFh)
+    '
+    '                        bit 65  RP1:RP0:  Register Bank Select bits (used for direct addressing)
+    '                            00       = Bank 0 (00h-7Fh)
+    '                            01       = Bank 1 (80h-FFh)
+    '                            10       = Bank 2 (100h-17Fh)
+    '                            11       = Bank 3 (180h-1FFh)
+    '
+    '                        bit 4   TO: Time Out bit
+    '                            1        = After power-up, CLRWDT instruction or SLEEP instruction
+    '                            0        = A WDT time out occurred
+    '
+    '                        bit 3   PD: Power-down bit
+    '                            1        = After power-up or by the CLRWDT instruction
+    '                            0        = By execution of the SLEEP instruction
+    '
+    '                        bit 2   Z: Zero bit
+    '                            1        = The result of an arithmetic or logic operation is zero
+    '                            0        = The result of an arithmetic or logic operation is not zero
+    '                        bit 1   DC: Digit Carry/Borrow bit (ADDWF, ADDLW,SUBLW,SUBWF instructions) (for Borrow the polarity is reversed)
+    '                            1        = A carry-out from the 4th low order bit of the result occurred
+    '                            0        = No carry-out from the 4th low order bit of the result
+    '
+    '                        bit 0   C: Carry/Borrow bit (ADDWF, ADDLW,SUBLW,SUBWF instructions)
+    '                            1        = A carry-out from the Most Significant bit of the result occurred
+    '                            0        = No carry-out from the Most Significant bit of the result occurred
+    '
+    'Note:   For Borrow, the polarity is reversed.
+    '        A subtraction is executed by adding the twoís complement of the second operand.
+    '        For rotate (RRF, RLF) instructions, this bit is loaded with either the high or low order bit of the source register
+    '================================================================================
+    '
+    '
+
+       PIE1.TMR1IE = 1   ' voor Timer1
+       PIE1.TMR2IE = 1   ' voor Timer2
+
+    '  PIE1 ñ PERIPHERAL INTERRUPT ENABLE REGISTER 1 (ADDRESS: 8Ch)
+    '
+    '       R/W-0  R/W-0  R/W-0   R/W-0  U-0  R/W-0   R/W-0   R/W-0
+    '       EEIE:  CMIE:  RCIE:   TXIE:   ó:  CCP1IE: TMR2IE: TMR1IE:
+    '
+    '
+    '                        bit 7   EEIE: EE Write Complete Interrupt Enable Bit
+    '                                   1 = Enables the EE write complete interrupt
+    '                                   0 = Disables the EE write complete interrupt
+    '
+    '                        bit 6   CMIE: Comparator Interrupt Enable bit
+    '                                   1 = Enables the comparator interrupt
+    '                                   0 = Disables the comparator interrupt
+    '
+    '                        bit 5   RCIE: USART Receive Interrupt Enable bit
+    '                                   1 = Enables the USART receive interrupt
+    '                                   0 = Disables the USART receive interrupt
+    '
+    '                        bit 4   TXIE: USART Transmit Interrupt Enable bit
+    '                                   1 = Enables the USART transmit interrupt
+    '                                   0 = Disables the USART transmit interrupt
+    '
+    '                        bit 3   Unimplemented: Read as ë0í
+    '
+    '                        bit 2   CCP1IE: CCP1 Interrupt Enable bit
+    '                                   1 = Enables the CCP1 interrupt
+    '                                   0 = Disables the CCP1 interrupt
+    '
+    '                        bit 1   TMR2IE: TMR2 to PR2 Match Interrupt Enable bit
+    '                                   1 = Enables the TMR2 to PR2 match interrupt
+    '                                   0 = Disables the TMR2 to PR2 match interrupt
+    '
+    '                        bit 0   TMR1IE: TMR1 Overflow Interrupt Enable bit
+    '                                   1 = Enables the TMR1 overflow interrupt
+    '                                   0 = Disables the TMR1 overflow interrupt
+    '================================================================================
+    '
+             'PIR1.TMR1IF = 0   ' voor Timer1
+   
+    '        PIR1 REGISTER (ADDRESS 0Ch)
+    '
+    '        PSPIF(1) ADIF RCIF TXIF SSPIF CCP1IF TMR2IF TMR1IF
+    '        bit 7                                       bit 0
+    '
+    '        bit 7 PSPIF: Parallel Slave Port Read/Write Interrupt Flag bit(1)
+    '                1 = A read or a write operation has taken place (must be cleared in software)
+    '                0 = No read or write has occurred
+    '
+    '        bit 6 ADIF: A/D Converter Interrupt Flag bit
+    '                1 = An A/D conversion completed
+    '                0 = The A/D conversion is not complete
+    '
+    '        bit 5 RCIF: USART Receive Interrupt Flag bit
+    '                1 = The USART receive buffer is full
+    '                0 = The USART receive buffer is empty
+    '
+    '        bit 4 TXIF: USART Transmit Interrupt Flag bit
+    '                1 = The USART transmit buffer is empty
+    '                0 = The USART transmit buffer is full
+    '
+    '        bit 3 SSPIF: Synchronous Serial Port (SSP) Interrupt Flag bit
+    '                1 = The SSP interrupt condition has occurred and must be cleared in software before returning
+    '                        from the Interrupt Service Routine. The conditions that will set this bit are:
+    '                        ï SPI ñ A transmission/reception has taken place.
+    '                        ï I2C Slave ñ A transmission/reception has taken place.
+    '                        ï I2C Master
+    '                        - A transmission/reception has taken place.
+    '                        - The initiated Start condition was completed by the SSP module.
+    '                        - The initiated Stop condition was completed by the SSP module.
+    '                        - The initiated Restart condition was completed by the SSP module.
+    '                        - The initiated Acknowledge condition was completed by the SSP module.
+    '                        - A Start condition occurred while the SSP module was Idle (multi-master system).
+    '                        - A Stop condition occurred while the SSP module was Idle (multi-master system).
+    '                0 = No SSP interrupt condition has occurred
+    '
+    '        bit 2 CCP1IF: CCP1 Interrupt Flag bit
+    '                Capture mode:
+    '                1 = A TMR1 register capture occurred (must be cleared in software)
+    '                0 = No TMR1 register capture occurred
+    '                Compare mode:
+    '                1 = A TMR1 register compare match occurred (must be cleared in software)
+    '                0 = No TMR1 register compare match occurred
+    '                PWM mode:
+    '                Unused in this mode.
+    '
+    '        bit 1 TMR2IF: TMR2 to PR2 Match Interrupt Flag bit
+    '                1 = TMR2 to PR2 match occurred (must be cleared in software)
+    '                0 = No TMR2 to PR2 match occurred
+    '
+    '        bit 0 TMR1IF: TMR1 Overflow Interrupt Flag bit
+    '                1 = TMR1 register overflowed (must be cleared in software)
+    '                0 = TMR1 register did not overflow
+    '=============================================================================
+
+    '  PCON ñ POWER CONTROL REGISTER (ADDRESS: 8Eh)
+    '
+    'Note: BOR is unknown on Power-on Reset. It must then be set by the user and checked
+    '      on subsequent Resets to see if BOR is cleared, indicating a brown-out has occurred.
+    '      The BOR Status bit is a ìdonít careî and is not necessarily predictable if
+    '      the brown-out circuit is disabled (by clearing the BOREN bit in the Configuration Word).
+    '
+    '      U-0 U-0 U-0 U-0 R/W-1 U-0 R/W-0 R/W-x
+    '      ó   ó   ó   ó   OSCF  ó   POR   BOR
+    '
+    '                        bit 7-4 Unimplemented: Read as ë0í
+    '
+    '                        bit 3   OSCF: INTOSC Oscillator Frequency bit
+    '                                  1 = 4 MHz typical
+    '                                  0 = 48 kHz typical
+    '
+    '                        bit 2   Unimplemented: Read as ë0í
+    '
+    '                        bit 1   POR: Power-on Reset Status bit
+    '                                  1 = No Power-on Reset occurred
+    '                                  0 = A Power-on Reset occurred (must be set in software after a Power-on Reset occurs)
+    '
+    '                        bit 0   BOR: Brown-out Reset Status bit
+    '                                  1 = No Brown-out Reset occurred
+    '                                  0 = A Brown-out Reset occurred (must be set in software after a Brown-out Reset occurs)
+    '================================================================================
+    '
+    '
+    '        REGISTER 2-2: OPTION_REG REGISTER (ADDRESS 81h, 181h)
+    '
+    '        Note: To achieve a 1:1 prescaler assignment for the TMR0 register, assign the prescaler to the Watchdog Timer.
+    '
+    '        R/W-1         R/W-1         R/W-1         R/W-1         R/W-1         R/W-1         R/W-1         R/W-1
+    '        RBPU         INTEDG         T0CS         T0SE         PSA         PS2         PS1         PS0
+    '        bit 7                                                                                                         bit 0
+    '
+    '        bit 7 RBPU: PORTB Pull-up Enable bit
+    '                        1 = PORTB pull-ups are disabled
+    '                        0 = PORTB pull-ups are enabled by individual port latch values
+    '
+    '        bit 6 INTEDG: Interrupt Edge Select bit
+    '                        1 = Interrupt on rising edge of RB0/INT pin
+    '                        0 = Interrupt on falling edge of RB0/INT pin
+    '
+    '        bit 5 T0CS: TMR0 Clock Source Select bit
+    '                        1 = Transition on RA4/T0CKI pin
+    '                        0 = Internal instruction cycle clock (CLKO)
+    '
+    '        bit 4 T0SE: TMR0 Source Edge Select bit
+    '                        1 = Increment on high-to-low transition on RA4/T0CKI pin
+    '                        0 = Increment on low-to-high transition on RA4/T0CKI pin
+    '
+    '        bit 3 PSA: Prescaler Assignment bit
+    '                        1 = Prescaler is assigned to the WDT
+    '                        0 = Prescaler is assigned to the Timer0 module
+    '
+    '        bit 2-0 PS2:PS0: Prescaler Rate Select bits
+    '                        Bit        value        TMRO Rate        WDT Rate
+    '                        000                        1 : 2                1 : 1
+    '                        001                        1 : 4                1 : 2
+    '                        010                        1 : 8                1 : 4
+    '                        011                        1 : 16                1 : 8
+    '                        100                        1 : 32                1 : 16
+    '                        101                        1 : 64                1 : 32
+    '                        110                        1 : 128                1 : 64
+    '                        111                        1 : 256                1 : 128
+    '
+    '        Note: When using Low-Voltage ICSP Programming (LVP) and the pull-ups on PORTB are
+    '              enabled, bit 3 in the TRISB register must be cleared to disable the pull-up on RB3
+    '              and ensure the proper operation of the device
+    '
+    '================================================================================
+    '
+    '
+    ' voor Uart1 interrupt
+        'INTCON = %
+        
+        ' voor Timer1
+        'INTCON = %
+        
+        ' voor Timer2
+        INTCON = %11000000
+
+        ' de gewenste instellingen OR'en
+        'INTCON = %
+
+    '
+    '        Note: Interrupt flag bits are set when an interrupt condition occurs regardless of the state of its
+    '                  corresponding enable bit or the global enable bit, GIE (INTCON<7>).
+    '                  User software should ensure the appropriate interrupt flag bits are clear prior to enabling an interrupt.
+    '
+    '        R/W-0         R/W-0         R/W-0         R/W-0         R/W-0         R/W-0         R/W-0         R/W-x
+    '        GIE         PEIE         TMR0IE         INTE         RBIE         TMR0IF         INTF         RBIF
+    '        bit 7                                                                                                         bit 0
+    '
+    '        bit 7 GIE: Global Interrupt Enable bit
+    '                        1 = Enables all unmasked interrupts
+    '                        0 = Disables all interrupts
+    '
+    '        bit 6 PEIE: Peripheral Interrupt Enable bit
+    '                        1 = Enables all unmasked peripheral interrupts
+    '                        0 = Disables all peripheral interrupts
+    '
+    '        bit 5 TMR0IE: TMR0 Overflow Interrupt Enable bit
+    '                        1 = Enables the TMR0 interrupt
+    '                        0 = Disables the TMR0 interrupt
+    '
+    '        bit 4 INTE: RB0/INT External Interrupt Enable bit
+    '                        1 = Enables the RB0/INT external interrupt
+    '                        0 = Disables the RB0/INT external interrupt
+    '
+    '        bit 3 RBIE: RB Port Change Interrupt Enable bit
+    '                        1 = Enables the RB port change interrupt
+    '                        0 = Disables the RB port change interrupt
+    '
+    '        bit 2 TMR0IF: TMR0 Overflow Interrupt Flag bit
+    '                        1 = TMR0 register has overflowed (must be cleared in software)
+    '                        0 = TMR0 register did not overflow
+    '
+    '        bit 1 INTF: RB0/INT External Interrupt Flag bit
+    '                        1 = The RB0/INT external interrupt occurred (must be cleared in software)
+    '                        0 = The RB0/INT external interrupt did not occur
+    '
+    '        bit 0 RBIF: RB Port Change Interrupt Flag bit
+    '                        1 = At least one of the RB7:RB4 pins changed state; a mismatch condition will continue to set
+    '                                the bit. Reading PORTB will end the mismatch condition and allow the bit to be cleared
+    '                                (must be cleared in software).
+    '                        0 = None of the RB7:RB4 pins have changed state
+    '================================================================================
+    '
+       ' enable Timer1
+       T1CON       = %00000001
+    '
+    '  T1CON ñ TIMER1 CONTROL REGISTER (ADDRESS: 10h)
+    '
+    '          U-0 U-0 R/W-0    R/W-0    R/W-0    R/W-0   R/W-0   R/W-0
+    '          ó   ó   T1CKPS1: T1CKPS0: T1OSCEN: T1SYNC: TMR1CS: TMR1ON:
+    '
+    '                        bit 7-6 Unimplemented: Read as ë0í
+    '                        bit 5-4 T1CKPS1: T1CKPS0: Timer1 Input Clock Prescale Select bits
+    '                                  11 = 1:8 Prescale value
+    '                                  10 = 1:4 Prescale value
+    '                                  01 = 1:2 Prescale value
+    '                                  00 = 1:1 Prescale value
+    '                        bit 3   T1OSCEN: Timer1 Oscillator Enable Control bit
+    '                                   1 = Oscillator is enabled
+    '                                   0 = Oscillator is shut off(1)
+    '                        bit 2   T1SYNC: Timer1 External Clock Input Synchronization Control bit
+    '                                TMR1CS = 1
+    '                                   1 = Do not synchronize external clock input
+    '                                   0 = Synchronize external clock input
+    '                                TMR1CS = 0
+    '                                This bit is ignored. Timer1 uses the internal clock when TMR1CS = 0.
+    '                        bit 1   TMR1CS: Timer1 Clock Source Select bit
+    '                                   1 = External clock from pin RB6/T1OSO/T1CKI/PGC (on the rising edge)
+    '                                   0 = Internal clock (FOSC/4)
+    '                        bit 0   TMR1ON: Timer1 On bit
+    '                                   1 = Enables Timer1
+    '                                   0 = Stops Timer1
+    '================================================================================
+    '
+
+       'Timer2   T2CON	 = 0x7E  voor 13 mSec
+       T2CON = %01111110     ' voor Timer2
+    '
+    '  T2CON ñ TIMER2 CONTROL REGISTER (ADDRESS: 12h)
+    '
+    '        U-0 R/W-0    R/W-0    R/W-0    R/W-0    R/W-0   R/W-0    R/W-0
+    '        ó   TOUTPS3: TOUTPS2: TOUTPS1: TOUTPS0: TMR2ON: T2CKPS1: T2CKPS0:
+    '
+    '                        bit 7   Unimplemented: Read as ë0í
+    '
+    '                        bit 6-3 TOUTPS3:  TOUTPS2:  TOUTPS1:   Timer2 Output Postscale Select bits
+    '                                 0000 = 1:1 Postscale Value
+    '                                 0001 = 1:2 Postscale Value
+    '                                 ï
+    '                                 ï
+    '                                 ï
+    '                                 1111 = 1:16 Postscale
+    '
+    '                        bit 2   TMR2ON: Timer2 On bit
+    '                                  1 = Timer2 is on
+    '                                  0 = Timer2 is off
+    '
+    '                        bit 1-0 T2CKPS1:  T2CKPS1:  Timer2 Clock Prescale Select bits
+    '                                 00 = 1:1 Prescaler Value
+    '                                 01 = 1:4 Prescaler Value
+    '                                 1x = 1:16 Prescaler Value
+    '================================================================================
+    '
+    '
+    '  CCP1CON ñ CCP OPERATION REGISTER (ADDRESS: 17h)
+    '================================================================================
+    '
+    '
+    'PWM Timer2
+    '
+    '         U-0 U-0 R/W-0  R/W-0  R/W-0   R/W-0   R/W-0   R/W-0
+    '         ó   ó   CCP1X: CCP1Y: CCP1M3: CCP1M2: CCP1M1: CCP1M0:
+    '
+    '                        bit 7-6 Unimplemented: Read as ë0í
+    '                        bit 5-4 CCP1X: CCP1Y: PWM Least Significant bits
+    '                                Capture Mode
+    '                                Unused
+    '                                Compare Mode
+    '                                Unused
+    '                                PWM Mode
+    '                                These bits are the two LSbs of the PWM duty cycle. The eight MSbs are found in CCPRxL.
+    '                        bit 3-0 CCP1M3: CP1M2: CCP1M1: CCP1M0:  CCPx Mode Select bits
+    '                                0000 = Capture/Compare/PWM off (resets CCP1 module)
+    '                                0100 = Capture mode, every falling edge
+    '                                0101 = Capture mode, every rising edge
+    '                                0110 = Capture mode, every 4th rising edge
+    '                                0111 = Capture mode, every 16th rising edge
+    '                                1000 = Compare mode, set output on match (CCP1IF bit is set)
+    '                                1001 = Compare mode, clear output on match (CCP1IF bit is set)
+    '                                1010 = Compare mode, generate software interrupt on match (CCP1IF bit is set, CCP1 pin is unaffected)
+    '                                1011 = Compare mode, trigger special event (CCP1IF bit is set; CCP1 resets TMR1
+    '                                11xx = PWM mode
+    '================================================================================
+    '
+    '
+    '  CMCON ñ COMPARATOR CONFIGURATION REGISTER (ADDRESS: 01Fh)
+    '
+    '         R-0    R-0    R/W-0  R/W-0  R/W-0 R/W-0 R/W-0 R/W-0
+    '         C2OUT: C1OUT: C2INV: C1INV: CIS:  CM2:  CM1:  CM0:
+    '
+    '                        bit 7   C2OUT: Comparator 2 Output bit
+    '                                When C2INV = 0:
+    '                                  1 = C2 VIN+ > C2 VIN-
+    '                                  0 = C2 VIN+ < C2 VIN
+    '
+    '                                When C2INV = 1:
+    '                                  1 = C2 VIN+ < C2 VIN-
+    '                                  0 = C2 VIN+ > C2 VIN
+    '
+    '                        bit 6    C1OUT: Comparator 1 Output bit
+    '                                When C1INV = 0:
+    '                                  1 = C1 VIN+ > C1 VIN-
+    '                                  0 = C1 VIN+ < C1 VIN
+    '
+    '                                When C1INV = 1:
+    '                                  1 = C1 VIN+ < C1 VIN-
+    '                                  0 = C1 VIN+ > C1 VIN
+    '
+    '                        bit 5   C2INV: Comparator 2 Output Inversion bit
+    '                                  1 = C2 Output inverted
+    '                                  0 = C2 Output not inverted
+    '
+    '                        bit 4   C1INV: Comparator 1 Output Inversion bit
+    '                                  1 = C1 Output inverted
+    '                                  0 = C1 Output not inverted
+    '
+    '                        bit 3   CIS: Comparator Input Switch bit
+    '                                When CM<2:0>: = 001
+    '                                 Then:
+    '                                  1 = C1 VIN- connects to RA3
+    '                                  0 = C1 VIN- connects to RA0
+    '
+    '                                When CM<2:0> = 010
+    '                                 Then:
+    '                                  1 = C1 VIN- connects to RA3
+    '                                  C2 VIN- connects to RA2
+    '                                  0 = C1 VIN- connects to RA0
+    '                                  C2 VIN- connects to RA1
+    '
+    '                        bit 2-0 CM2: CM1: CM0: Comparator Mode bits zie tekening in PDF file
+    '================================================================================
+    '
+    '
+    '  VRCON   VOLTAGE REFERENCE CONTROL REGISTER (ADDRESS: 9Fh)
+    '
+    '          R/W-0 R/W-0 R/W-0  U-0 R/W-0  R/W-0 R/W-0 R/W-0
+    '          VREN: VROE: VRR:   .   VR3:   VR2:  VR1:  VR0:
+    '
+    '                        bit 7   VREN: VREF Enable bit
+    '                                 1 = VREF circuit powered on
+    '                                 0 = VREF circuit powered down, no IDD drain
+    '
+    '                        bit 6   VROE: VREF Output Enable bit
+    '                                 1 = VREF is output on RA2 pin
+    '                                 0 = VREF is disconnected from RA2 pin
+    '
+    '                        bit 5   VRR: VREF Range Selection bit
+    '                                 1 = Low range
+    '                                 0 = High range
+    '
+    '                        bit 4   Unimplemented: Read as Åe0Åf
+    '
+    '                        bit 3-0 VR3: VR2: VR0: VREF Value Selection bits
+    '                                When VRR = 1: VREF = (VR<3:0>/ 24) * VDD
+    '                                When VRR = 0: VREF = 1/4 * VDD + (VR<3:0>/ 32) * VDD
+    '================================================================================
+    '
+    '
+    '  TXSTA ñ TRANSMIT STATUS AND CONTROL REGISTER (ADDRESS: 98h)
+    '
+    '           R/W-0 R/W-0 R/W-0 R/W-0 U-0 R/W-0 R-1   R/W-0
+    '           CSRC: TX9:  TXEN: SYNC: ó   BRGH: TRMT: TX9D:
+    '
+    '                        bit 7   CSRC: Clock Source Select bit
+    '                                Asynchronous mode  Donít care
+    '                                Synchronous mode
+    '                                  1 = Master mode (Clock generated internally from BRG)
+    '                                  0 = Slave mode (Clock from external source)
+    '
+    '                        bit 6   TX9: 9-bit Transmit Enable bit
+    '                                  1 = Selects 9-bit transmission
+    '                                  0 = Selects 8-bit transmission
+    '
+    '                        bit 5   TXEN: Transmit Enable bit
+    '                                  1 = Transmit enabled
+    '                                  0 = Transmit disabled
+    '
+    '                        bit 4   SYNC: USART Mode Select bit
+    '                                  1 = Synchronous mode
+    '                                  0 = Asynchronous mode
+    '
+    '                        bit 3   Unimplemented: Read as ë0í
+    '
+    '                        bit 2   BRGH: High Baud Rate Select bit
+    '                                Asynchronous mode
+    '                                  1 = High speed
+    '                                  0 = Low speed
+    '                                Synchronous mode  Unused in this mode
+    '
+    '                        bit 1   TRMT: Transmit Shift Register Status bit
+    '                                  1 = TSR empty
+    '                                  0 = TSR full
+    '
+    '                        bit 0   TX9D: 9th bit of transmit data. Can be parity bit.
+    '                                  Note 1: SREN/CREN overrides TXEN in SYNC mode.
+    '
+    '================================================================================
+    '
+    '
+    '  RCSTA ñ RECEIVE STATUS AND CONTROL REGISTER (ADDRESS: 18h)
+    '
+    '          R/W-0 R/W-0 R/W-0 R/W-0 R/W-0 R-0   R-0   R-x
+    '          SPEN: RX9:  SREN: CREN: ADEN: FERR: OERR: RX9D:
+    '
+    '                        bit 7   SPEN: Serial Port Enable bit
+    '                                 (Configures RB1/RX/DT and RB2/TX/CK pins as serial port pins when bits TRISB<2:1> are set)
+    '                                  1 = Serial port enabled
+    '                                  0 = Serial port disabled
+    '
+    '                        bit 6   RX9: 9-bit Receive Enable bit
+    '                                  1 = Selects 9-bit reception
+    '                                  0 = Selects 8-bit reception
+    '
+    '                        bit 5   SREN: Single Receive Enable bit
+    '                                Asynchronous mode: Donít care
+    '                                Synchronous mode - master:
+    '                                  1 = Enables single receive
+    '                                  0 = Disables single receive
+    '                                This bit is cleared after reception is complete.
+    '                                Synchronous mode - slave: Unused in this mode
+    '
+    '                        bit 4   CREN: Continuous Receive Enable bit
+    '                                Asynchronous mode:
+    '                                  1 = Enables continuous receive
+    '                                  0 = Disables continuous receive
+    '                                Synchronous mode:
+    '                                  1 = Enables continuous receive until enable bit CREN is cleared (CREN overrides SREN)
+    '                                  0 = Disables continuous receive
+    '
+    '                        bit 3   ADEN: Address Detect Enable bit
+    '                                 Asynchronous mode 9-bit (RX9 = 1):
+    '                                  1 = Enables address detection, enable interrupt and load of the receive buffer when RSR<8> is set
+    '                                  0 = Disables address detection, all bytes are received, and ninth bit can be used as parity bit
+    '                                  Asynchronous mode 8-bit (RX9 = 0): Unused in this mode
+    '                                  Synchronous mode  Unused in this mode
+    '
+    '                        bit 2   FERR: Framing Error bit
+    '                                  1 = Framing error (Can be updated by reading RCREG register and receive next valid byte)
+    '                                  0 = No framing error
+    '
+    '                        bit 1   OERR: Overrun Error bit
+    '                                  1 = Overrun error (Can be cleared by clearing bit CREN)
+    '                                  0 = No overrun error
+    '
+    '                        bit 0   RX9D: 9th bit of received data (Can be parity bit)
+    '================================================================================
+  end sub
+end.

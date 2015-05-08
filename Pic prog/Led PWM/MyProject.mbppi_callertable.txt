@@ -1,0 +1,10 @@
+main
+	Proc_Tris_init_16F877a
+	Proc_Init_Timer1_16F877a_module
+	Proc_Init_Timer2_16F877a_module
+	Proc_Register_settings_PIC_16F877a_module
+Interrupt
+	Proc_Test_display_A5
+	Proc_Init_Timer1_16F877a_module
+	Proc_Setpoint_modificatie_3
+	Proc_Init_Timer2_16F877a_module

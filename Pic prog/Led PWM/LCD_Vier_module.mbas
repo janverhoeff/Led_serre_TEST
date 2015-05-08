@@ -1,0 +1,210 @@
+module LCD_Vier_module
+
+'  Symbol LCD_selectie_bit_low  = PortB.6      ' om de 4 LCD te kiezen via B port
+'  Symbol LCD_selectie_bit_high = PortB.7      ' om de 4 LCD te kiezen via B port
+
+  Symbol LCD_selectie_bit_low  = PortD.6      ' om de 4 LCD te kiezen via D port
+  Symbol LCD_selectie_bit_high = PortD.7      ' om de 4 LCD te kiezen via D port
+
+
+  'const
+  '
+  '-----------------------------------------------------------------------------
+
+
+ ' begin LCD I-O benoemen  t/m 16F877a
+ '                             =======
+  dim LCD_RS as sbit at RB4_bit
+      LCD_EN as sbit at RB5_bit
+      LCD_D4 as sbit at RB0_bit
+      LCD_D5 as sbit at RB1_bit
+      LCD_D6 as sbit at RB2_bit
+      LCD_D7 as sbit at RB3_bit
+
+      LCD_RS_Direction as sbit at TRISB4_bit
+      LCD_EN_Direction as sbit at TRISB5_bit
+      LCD_D4_Direction as sbit at TRISB0_bit
+      LCD_D5_Direction as sbit at TRISB1_bit
+      LCD_D6_Direction as sbit at TRISB2_bit
+      LCD_D7_Direction as sbit at TRISB3_bit
+  '-----------------------------------------------------------------------------
+
+
+' ' begin LCD I-O benoemen 18F46K22
+' '                        ========
+'  dim LCD_RS as sbit at LATB4_bit
+'      LCD_EN as sbit at LATB5_bit
+'      LCD_D4 as sbit at LATB0_bit
+'      LCD_D5 as sbit at LATB1_bit
+'      LCD_D6 as sbit at LATB2_bit
+'      LCD_D7 as sbit at LATB3_bit
+'
+'  dim LCD_RS_Direction as sbit at TRISB4_bit
+'      LCD_EN_Direction as sbit at TRISB5_bit
+'      LCD_D4_Direction as sbit at TRISB0_bit
+'      LCD_D5_Direction as sbit at TRISB1_bit
+'      LCD_D6_Direction as sbit at TRISB2_bit
+'      LCD_D7_Direction as sbit at TRISB3_bit
+  '-----------------------------------------------------------------------------
+
+
+' ' begin LCD I-O benoemen 18F46K22
+' '                        ========
+'  dim LCD_RS as sbit at LATD4_bit
+'      LCD_EN as sbit at LATD5_bit
+'      LCD_D4 as sbit at LATD0_bit
+'      LCD_D5 as sbit at LATD1_bit
+'      LCD_D6 as sbit at LATD2_bit
+'      LCD_D7 as sbit at LATD3_bit
+'
+'  dim LCD_RS_Direction as sbit at TRISD4_bit
+'      LCD_EN_Direction as sbit at TRISD5_bit
+'      LCD_D4_Direction as sbit at TRISD0_bit
+'      LCD_D5_Direction as sbit at TRISD1_bit
+'      LCD_D6_Direction as sbit at TRISD2_bit
+'      LCD_D7_Direction as sbit at TRISD3_bit
+  '-----------------------------------------------------------------------------
+
+
+  Dim Text_LCD     as char[20]
+
+  ' procedures en functions   prototypes   declareren  = header
+  Sub Procedure Proc_4_LCD_initialiseren
+  Sub Procedure Proc_n_LCD_keuze (dim keuze as byte)
+  Sub Procedure Proc_n_LCD_Clear_Screen  (dim keuze as byte)
+  Sub Procedure Proc_n_LCD_Text_LCD      (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim byref Omschrijving as string[20])
+  Sub Procedure Proc_n_LCD_Byte_LCD      (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim Byte_getal as byte)
+  Sub Procedure Proc_n_LCD_Int_LCD       (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim Int_getal as integer)
+  Sub Procedure Proc_n_LCD_Word_LCD      (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim Word_getal as word)
+  Sub Procedure Proc_n_LCD_Float_LCD     (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim Float_getal as float)
+  Sub Procedure Proc_n_LCD_Text_Int_LCD  (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim byref Text_Hprog as string[20], dim Int_getal as integer)
+  Sub Procedure Proc_n_LCD_Text_Byte_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim byref Text_Hprog as string[20], dim Byte_getal as byte)
+  Sub Procedure Proc_n_LCD_Text_Word_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim byref Text_Hprog as string[20], dim Word_getal as integer)
+  '=============================================================================
+
+  implements
+
+  ' constants declarations
+  'const
+
+  ' variables declarations
+  'dim
+
+  '-------------------------------------------------------------------------------
+
+
+  Sub Procedure Proc_4_LCD_initialiseren
+    dim I as byte
+    For I = 0 to 3
+      Proc_n_LCD_keuze (I)
+      Lcd_Init()
+      Lcd_Cmd(_LCD_CLEAR)
+      LCD_Cmd(_LCD_CURSOR_OFF)
+      Delay_ms(100)
+    next I
+  end sub
+'===============================================================================
+
+
+  Sub Procedure Proc_n_LCD_keuze (dim keuze as byte)
+    If keuze = 0 then LCD_selectie_bit_low = 0  Delay_us(20) LCD_selectie_bit_high = 0  end if
+    If keuze = 1 then LCD_selectie_bit_low = 1  Delay_us(20) LCD_selectie_bit_high = 0  end if
+    If keuze = 2 then LCD_selectie_bit_low = 0  Delay_us(20) LCD_selectie_bit_high = 1  end if
+    If keuze = 3 then LCD_selectie_bit_low = 1  Delay_us(20) LCD_selectie_bit_high = 1  end if
+    Delay_ms(20)      ' 7 us is minimaal nodig !!!!
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_n_LCD_Clear_Screen (dim keuze as byte)
+    Proc_n_LCD_keuze (keuze)
+    Lcd_Cmd(_LCD_CLEAR)
+    LCD_Cmd(_LCD_CURSOR_OFF)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_n_LCD_Text_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim byref Omschrijving as string[20])
+    Proc_n_LCD_keuze (LCD_keuze)
+    Lcd_Out(LCD_regel, LCD_kolom, Omschrijving)
+  end sub
+ '==============================================================================
+
+
+  Sub Procedure Proc_n_LCD_Byte_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim Byte_getal as byte)
+    Proc_n_LCD_keuze (LCD_keuze)
+    ByteToStr(Byte_getal, Text_LCD)
+    Lcd_Out(LCD_regel, LCD_kolom, Text_LCD)
+  end sub
+ '==============================================================================
+
+
+  Sub Procedure Proc_n_LCD_Int_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim Int_getal as integer)
+    Proc_n_LCD_keuze (LCD_keuze)
+    IntToStr(Int_getal,Text_LCD)
+    Lcd_Out(LCD_regel, LCD_kolom,Text_LCD)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_n_LCD_Word_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim Word_getal as word)
+    Proc_n_LCD_keuze (LCD_keuze)
+    WordToStr(Word_getal,Text_LCD)
+    Lcd_Out(LCD_regel, LCD_kolom,Text_LCD)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_n_LCD_Float_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim Float_getal as float)
+    Proc_n_LCD_keuze (LCD_keuze)
+    FloatToStr(Float_getal,Text_LCD)
+    Lcd_Out(LCD_regel, LCD_kolom,Text_LCD)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_n_LCD_Text_Byte_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim byref Text_Hprog as string[20], dim Byte_getal as byte)
+
+    ' LCD_kolom wordt nog niet gebruikt
+    dim Display_array as string [10]
+
+    '     strncpy(dim byref s1, s2 as string, dim size as word)
+
+    '     Description The function copies at most size characters from the string s2
+    '     to the string s1.
+    '     If s2 contains fewer characters than size, s1 is padded out with null characters up to the total length of the size characters.
+
+    Display_array = ".........."
+    strncpy(Display_array, Text_Hprog, 10)
+    Proc_n_LCD_Text_LCD (LCD_keuze, LCD_regel,  1, Display_array)
+    Proc_n_LCD_Byte_LCD  (LCD_keuze, LCD_regel, 18, Byte_getal)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_n_LCD_Text_Int_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim byref Text_Hprog as string[20], dim Int_getal as integer)
+    ' LCD_kolom wordt nog niet gebruikt
+    dim Display_array as string [10]
+
+    Display_array = ".........."
+    strncpy(Display_array, Text_Hprog, 10)
+    Proc_n_LCD_Text_LCD (LCD_keuze, LCD_regel,  1, Display_array)
+    Proc_n_LCD_Int_LCD  (LCD_keuze, LCD_regel, 15, Int_getal)
+  end sub
+  '=============================================================================
+
+
+  Sub Procedure Proc_n_LCD_Text_Word_LCD (dim LCD_keuze, LCD_regel, LCD_kolom as byte, dim byref Text_Hprog as string[20], dim Word_getal as integer)
+    ' LCD_kolom wordt nog niet gebruikt
+    dim Display_array as string [10]
+
+    Display_array = ".........."
+    strncpy(Display_array, Text_Hprog, 10)
+    Proc_n_LCD_Text_LCD (LCD_keuze, LCD_regel,  1, Display_array)
+    Proc_n_LCD_Word_LCD (LCD_keuze, LCD_regel, 16, Word_getal)
+  end sub
+  '=============================================================================
+
+'-------------------------------------------------------------------------------
+
+end.
